@@ -48,7 +48,9 @@ function App() {
       </main>
 
       <footer className="bg-primary text-primary-foreground p-4 text-center mt-auto">
+        <Link to="/admin">
         <p>&copy; {new Date().getFullYear()} ENSPM Awards</p>
+        </Link>
       </footer>
     </div>
   );
