@@ -65,13 +65,13 @@ function HomePage() {
       <section className="relative overflow-hidden bg-gray-200/25">
         <div className="absolute inset-0"></div>
         <div 
-          className={`container mx-auto p-8 pt-16 transition-all duration-1000 ${
+          className={`container mx-auto p-8 pt-16 transition-all duration-1000${
             isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
           }`}
         >
           <div className="flex flex-col items-center md:flex-row justify-between gap-8">
             <div className="flex-1 space-y-6">
-              <div className="flex items-center gap-4 mb-4">
+              <div className="flex items-center gap-4 mb-4 ">
                 <div className="p-3 bg-gradient-to-r from-purple-600 to-amber-600 rounded-full animate-pulse">
                   <Trophy className="w-8 h-8 text-white" />
                 </div>
@@ -86,7 +86,7 @@ function HomePage() {
                 enseignants qui ont rendu votre année scolaire inoubliable et
                 découvrez qui seront les grands gagnants !
               </p>
-              <div className="flex gap-4 pt-4">
+              <div className="flex gap-4 pt-4 flex-wrap">
                 <div className="flex items-center gap-2 text-purple-600">
                   <Star className="w-5 h-5 animate-spin" style={{animationDuration: '3s'}} />
                   <span className="font-medium">Excellence</span>
