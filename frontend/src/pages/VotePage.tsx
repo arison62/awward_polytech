@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAppStore } from "@/lib/stores";
 import { submitStudentVote } from "@/lib/api";
@@ -25,11 +26,13 @@ function VotePage() {
   const navigate = useNavigate();
   const { currentStudent } = useAppStore();
 
-  const [voteDetails, setVoteDetails] = useState<any>(null); // TODO: Type plus précisément
+
+  const [voteDetails, ] = useState<any>(null); // TODO: Type plus précisément
   const [selectedCandidates, setSelectedCandidates] = useState<{
     [categoryId: number]: number | null;
   }>({});
-  const [loading, setLoading] = useState(true);
+ 
+  const [loading, ] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
