@@ -2,19 +2,20 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "Polytechnique Maroua awward",
-  "main": "index.js",
-  "module": "commonjs",
+  "main": "app.js",
   "type": "module",
   "scripts": {
     "dev": "nodemon app.js",
-    "start": "node app.js"
+    "start": "node ."
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "node-cron": "^4.0.7",
     "sequelize": "^6.37.7",
     "sqlite3": "^5.1.7"
