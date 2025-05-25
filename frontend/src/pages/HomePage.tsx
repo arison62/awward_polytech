@@ -40,7 +40,6 @@ function HomePage() {
     const fetchVotes = async () => {
       const response = await getGroups();
       if (response.data) {
-        console.log(response.data);
         setAvailableGroups(response.data);
       } else if (response.error) {
         toast(
@@ -273,7 +272,7 @@ function HomePage() {
                                     )}
                                     {vote.status === "pending" && (
                                       <CountDownDate
-                                        endDate={new Date(vote.endDate)}
+                                        endDate={new Date(vote.startDate)}
                                       />
                                     )}
                                   </div>

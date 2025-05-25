@@ -43,6 +43,7 @@ export const loginStudent = async (
       throw new Error(errorData.message || "Échec de la connexion étudiant.");
     }
     const data = await response.json();
+ 
     localStorage.setItem("access_token", data.access_token);
     return { data: data.student};
   } catch (error: any) {
@@ -50,30 +51,34 @@ export const loginStudent = async (
   }
 };
 
-// export const getVoteDetails = async (
-//   voteId: number,
-//   studentId: number
-// ): Promise<
-//   ApiResponse<{ vote: Vote; categories: Category[]; candidacies: Candidacy[] }>
-// > => {
-//   // TODO: Appel API pour récupérer les détails d'un vote, ses catégories et les candidats.
-//   // Le backend doit vérifier que studentId a le droit de voir ce vote (appartient au même groupe).
-//   try {
-//     const response = await fetch(
-//       `${API_BASE_URL}/votes/${voteId}/details?studentId=${studentId}`
-//     );
-//     if (!response.ok) {
-//       const errorData = await response.json();
-//       throw new Error(
-//         errorData.message || "Échec de la récupération des détails du vote."
-//       );
-//     }
-//     const data = await response.json();
-//     return { data: data }; // Supposons que ton API retourne { vote: {...}, categories: [...], candidacies: [...] }
-//   } catch (error: any) {
-//     return { error: error.message || "Erreur réseau." };
-//   }
-// };
+export const getVoteDetails = async (
+  voteId: number,
+  groupId: number
+): Promise<
+  ApiResponse<any>
+> => {
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/vote/${voteId}/category/${groupId}`, {
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+     
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Échec de la récupération des détails du vote."
+      );
+    }
+    const data = await response.json();
+    
+    return { data };
+  } catch (error: any) {
+    return { error: error.message || "Erreur réseau." };
+  }
+};
 
 export const submitStudentVote = async (voteData: {
   voteId: number;
@@ -100,29 +105,8 @@ export const submitStudentVote = async (voteData: {
   }
 };
 
-// --- Fonctions API pour l'Admin ---
 
-export const adminLogin = async (credentials: {
-  username: string;
-  password: string;
-}): Promise<ApiResponse<any>> => {
-  // TODO: Appel API pour la connexion admin (devrait renvoyer un JWT pour une meilleure sécurité)
-  try {
-    const response = await fetch(`${API_BASE_URL}/admin/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(credentials),
-    });
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Échec de la connexion admin.");
-    }
-    const data = await response.json();
-    return { data: data };
-  } catch (error: any) {
-    return { error: error.message || "Erreur réseau." };
-  }
-};
+
 
 export const createGroup = async (groupData: {
   name: string;

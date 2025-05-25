@@ -1,6 +1,7 @@
 import { Op } from "sequelize";
 import models from "../models/index.js";
 import e from "express";
+import Category from "../models/Category.js";
 
 const VOTE_STATUS = {
   pending: "pending",
@@ -158,6 +159,26 @@ export const deleteVote = async (req, res) => {
   }
 };
 
+
+export const getVoteByUserGroup = async (req, res) => {
+  const user = req.user;
+  const voteId = req.params.id;
+  if (!user) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  try {
+    const vote = await models.Vote.findOne({
+      where: { groupId: user.groupId, id: voteId },
+      include: { all: true },
+    });
+    if (!vote) {
+      return res.status(404).json({ message: "Vote not found" });
+    }
+    res.status(200).json({ message: "Vote found successfully", vote });
+  } catch (error) {
+    res.status(500).json({ message: "Error getting vote", error });
+  }
+}
 export const getVotesByUserGroup = async (req, res) => {
   const user = req.user;
   const { status } = req.query;
@@ -177,34 +198,35 @@ export const getVotesByUserGroup = async (req, res) => {
   }
 };
 
-// status: "pending" or "active"
-export const getUpTodateVotesByUserGroup = async (req, res) => {
-  const user = req.user;
-  if (!user) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
+export const getVoteDetails = async (req, res) => {
+  const { id, groupId } = req.params;
+  
   try {
-    const votes = await models.Vote.findAll(
-      {
-        where: {
-          [Op.or]: [
-            { status: VOTE_STATUS.pending },
-            { status: VOTE_STATUS.active },
-          ],
-          groupId: user.groupId,
-        },
-      },
-      { include: { all: true } }
-    );
-    if (!votes) {
-      return res.status(404).json({ message: "Votes not found" });
+    const vote = await models.Vote.findOne({
+      where: { id, groupId },
+      include:[
+        { 
+          model: models.Category,
+          include: {
+            model: models.Candidacy,
+          
+            include: {
+              model: models.Student,
+              
+            }
+          }
+        }
+      ]
+    });
+    if (!vote) {
+      return res.status(404).json({ message: "Vote not found" });
     }
-    res.status(200).json({ message: "Votes found successfully", votes });
+    res.status(200).json({ message: "Vote found successfully", vote });
   } catch (error) {
-    res.status(500).json({ message: "Error getting votes", error });
+    console.error("Error getting vote:", error);
+    res.status(500).json({ message: "Error getting vote", error });
   }
-};
-
+}
 export const getUpToDateVotes = async (req, res)=>{
   console.log("getUpToDateVotes")
   try {

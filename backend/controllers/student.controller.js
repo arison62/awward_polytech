@@ -73,10 +73,11 @@ const loginStudent = async (req, res)=>{
     try {
         const student = await models.Student.findOne({ where: { matricule } })
         if (!student) {
-            const payload = { id: student.id, role: "student", groupId: student.groupId }
-            return res.status(404).json({ message: "Student not found", access_token: generateToken(payload ), student })
+          
+            return res.status(404).json({ message: "Student not found",  })
         }
-        res.status(200).json({ message: "Student logged in successfully", student })
+        const payload = { id: student.id, role: "student", groupId: student.groupId }
+        res.status(200).json({ message: "Student logged in successfully", student, access_token : generateToken(payload) })
     } catch (error) {
         res.status(500).json({ message: "Error logging in student", error })
     }

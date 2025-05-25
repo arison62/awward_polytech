@@ -35,7 +35,7 @@ function LoginPage() {
     setLoading(false);
 
     if (response.data) {
-      console.log(response.data);
+    
       setStudent(response.data);
       toast("Connexion réussie", {
         description: `Bienvenue, ${response.data.name}`,
