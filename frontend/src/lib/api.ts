@@ -86,12 +86,13 @@ export const submitStudentVote = async (voteData: {
   voterStudentId: number;
   candidateStudentId: number;
 }): Promise<ApiResponse<any>> => {
-  // TODO: Appel API pour soumettre le vote d'un étudiant.
-  // Le backend gérera la logique de prévention du double vote (IP, fingerprint, matricule)
+  console.log(voteData);
   try {
-    const response = await fetch(`${API_BASE_URL}/student-votes`, {
+    const response = await fetch(`${API_BASE_URL}/studentVote/add`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json",
+        authorization: `Bearer ${localStorage.getItem("access_token")}`,
+       },
       body: JSON.stringify(voteData),
     });
     if (!response.ok) {

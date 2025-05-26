@@ -158,7 +158,7 @@ function VotePage() {
       toast("Succès", {
         description: "Tous vos votes ont été soumis avec succès !",
       });
-      navigate("/dashboard"); // Navigate to dashboard on full success
+      navigate("/"); // Navigate to dashboard on full success
     } else if (successCount > 0) {
       toast("Partiel succès", {
         description: `Certains votes ont été soumis. Erreurs: ${errorMessages.join(
