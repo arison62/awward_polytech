@@ -82,7 +82,7 @@ function VotePage() {
         });
         navigate("/");
       } finally {
-        setLoading(false); // Set loading to false after fetching (success or error)
+        setLoading(false);
       }
     };
 

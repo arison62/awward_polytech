@@ -387,7 +387,7 @@ function VoteManagement() {
       groupId: parseInt(selectedGroupId),
       categories,
     });
-    setLoading(false);
+    
 
     if (response.data) {
       toast("Vote créé", {
@@ -404,6 +404,8 @@ function VoteManagement() {
         description: response.error,
       });
     }
+
+    setLoading(false);
   };
 
   return (
