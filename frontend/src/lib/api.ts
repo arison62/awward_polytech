@@ -80,13 +80,38 @@ export const getVoteDetails = async (
   }
 };
 
+export const checkUserVoted = async (data : {
+  voteId: number,
+  studentId: number
+}) : Promise<ApiResponse<any>> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/studentVote/check`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json",
+        authorization: `Bearer ${localStorage.getItem("access_token")}`,
+       },
+      body: JSON.stringify(data),
+    });
+    const responseData = await response.json();
+    console.log(responseData)
+    if(response.ok){
+      return {data : responseData };
+    }else{
+      return {error : responseData.message || "Échec de la récupération des détails du vote."};
+    }
+    
+  } catch (error: any) {
+    return { error: error.message || "Erreur réseau." };
+  }
+}
+
+
 export const submitStudentVote = async (voteData: {
   voteId: number;
   categoryId: number;
   voterStudentId: number;
   candidateStudentId: number;
 }): Promise<ApiResponse<any>> => {
-  console.log(voteData);
   try {
     const response = await fetch(`${API_BASE_URL}/studentVote/add`, {
       method: "POST",
@@ -255,7 +280,21 @@ export const createCategory = async (categoryData: {
   }
 }
 
-
+export const getCategoriesByVoteId = async (voteId: number): Promise<ApiResponse<any>> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/category/vote/${voteId}`);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || "Échec de la récupération des categories."
+      );
+    }
+    const data = await response.json();
+    return { data: data.categories };
+  } catch (error: any) {
+    return { error: error.message || "Erreur réseau." };
+  }
+};
 
 export const bulkUploadStudents = async (
   students: any[]

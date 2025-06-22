@@ -10,7 +10,6 @@ import { useAppStore } from "./lib/stores";
 
 function App() {
   const currentStudent = useAppStore((state) => state.currentStudent);
-  console.log(currentStudent);
   return (
     <div className="min-h-screen flex flex-col">
       <header className="bg-primary text-primary-foreground p-4 shadow-md">

@@ -8,8 +8,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useAppStore, type Vote } from "@/lib/stores";
-import { getGroups } from "@/lib/api";
+import { useAppStore, type Category, type Vote } from "@/lib/stores";
+import { getGroups, checkUserVoted, getCategoriesByVoteId } from "@/lib/api";
 import { toast } from "sonner";
 import {
   Accordion,
@@ -18,10 +18,86 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import CountDownDate from "@/components/ui/countdown-date";
-import { Award, Star, Trophy, Users, Calendar, Mail, User, Lock } from "lucide-react";
+import {
+  Award,
+  Star,
+  Trophy,
+  Users,
+  Calendar,
+  Mail,
+  User,
+  Lock,
+} from "lucide-react";
 import logoSrc from "../assets/logo.png";
 import logoEnspm from "../assets/logo_enspm.png";
 
+const ButtonWithVoteChecked = ({
+  onClick,
+  voteId,
+  studentId,
+  className,
+  children,
+}: {
+  onClick: () => void;
+  voteId: number;
+  studentId: number;
+  className: string;
+  children: React.ReactNode;
+}) => {
+  const [isVoteChecked, setIsVoteChecked] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const checkVote = async () => {
+      setIsLoading(true);
+      const response = await checkUserVoted({ voteId, studentId });
+      setIsVoteChecked(response.data.hasVoted);
+      setIsLoading(false);
+    };
+    checkVote();
+  }, [voteId, studentId]);
+
+  return (
+    <Button
+      onClick={onClick}
+      disabled={isVoteChecked || isLoading}
+      className={className}
+    >
+      {isLoading
+        ? "Chargement..."
+        : isVoteChecked
+        ? "Vous avez deja participer"
+        : children}
+    </Button>
+  );
+};
+
+const CategoryList = ({ voteId }: { voteId: number }) => {
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const response = await getCategoriesByVoteId(voteId);
+      if (response.data) {
+        setCategories(response.data);
+      } else if (response.error) {
+        toast(
+          "Une erreur s'est produite lors de la récupération des categories disponibles.",
+          {
+            description: response.error,
+          }
+        );
+      }
+    };
+    fetchCategories();
+  }, [voteId]);
+  return (
+    <ul className="bg-white px-2 space-y-1">
+      {categories.map((category : Category) => (
+        <li key={category.id} className="list-disc list-inside">{category.name.charAt(0).toUpperCase() + category.name.slice(1)}</li>
+      ))}
+    </ul>
+  );
+};
 
 function HomePage() {
   const [availableGroups, setAvailableGroups] = useState<
@@ -52,7 +128,7 @@ function HomePage() {
       setIsLoaded(true);
     };
     fetchVotes();
-  }, [setAvailableGroups, toast]);
+  }, [setAvailableGroups]);
 
   const handleVoteClick = (voteId: number) => {
     navigate(`/vote/${voteId}`);
@@ -63,9 +139,9 @@ function HomePage() {
       {/* Hero Section avec animation d'entrée */}
       <section className="relative overflow-hidden bg-gray-200/25">
         <div className="absolute inset-0"></div>
-        <div 
+        <div
           className={`container mx-auto p-8 pt-16 transition-all duration-1000${
-            isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+            isLoaded ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
           }`}
         >
           <div className="flex flex-col items-center md:flex-row justify-between gap-8">
@@ -79,7 +155,10 @@ function HomePage() {
                 </h1>
               </div>
               <p className="text-2xl md:text-3xl leading-relaxed">
-                <span className="font-bold text-purple-600 animate-pulse">Première édition</span> de la{" "}
+                <span className="font-bold text-purple-600 animate-pulse">
+                  Première édition
+                </span>{" "}
+                de la{" "}
                 <span className="font-bold text-amber-600">ENSPM Awards</span>,
                 célébrons l'excellence et l'amitié ! Votez pour vos camarades et
                 enseignants qui ont rendu votre année scolaire inoubliable et
@@ -87,7 +166,10 @@ function HomePage() {
               </p>
               <div className="flex gap-4 pt-4 flex-wrap">
                 <div className="flex items-center gap-2 text-purple-600">
-                  <Star className="w-5 h-5 animate-spin" style={{animationDuration: '3s'}} />
+                  <Star
+                    className="w-5 h-5 animate-spin"
+                    style={{ animationDuration: "3s" }}
+                  />
                   <span className="font-medium">Excellence</span>
                 </div>
                 <div className="flex items-center gap-2 text-amber-600">
@@ -102,9 +184,9 @@ function HomePage() {
             </div>
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-amber-400 rounded-full blur-xl opacity-30 animate-pulse"></div>
-              <img 
-                src={logoSrc} 
-                className="relative z-10 transition-transform duration-500 hover:scale-110 hover:rotate-3" 
+              <img
+                src={logoSrc}
+                className="relative z-10 transition-transform duration-500 hover:scale-110 hover:rotate-3"
                 alt="ENSPM Awards Logo"
               />
             </div>
@@ -113,9 +195,11 @@ function HomePage() {
       </section>
 
       {/* Sponsor Section avec effet de flottement */}
-      <section className={`py-16 transition-all duration-1000 delay-300 bg-white ${
-        isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-      }`}>
+      <section
+        className={`py-16 transition-all duration-1000 delay-300 bg-white ${
+          isLoaded ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
+        }`}
+      >
         <div className="px-4">
           <div className="backdrop-blur-sm p-8 border border-white/50">
             <h2 className="text-3xl font-light text-center mb-8 text-gray-700">
@@ -126,7 +210,11 @@ function HomePage() {
                 <div className="absolute inset-0 blur-lg opacity-30 group-hover:opacity-50 transition-opacity"></div>
                 <div className="relative bg-white rounded-2xl p-6 border transition-transform duration-300 hover:scale-105">
                   <div className="flex flex-col items-center gap-4">
-                    <img src={logoEnspm} className="h-24 w-24 transition-transform duration-300 hover:rotate-12" alt="ENSPM Logo" />
+                    <img
+                      src={logoEnspm}
+                      className="h-24 w-24 transition-transform duration-300 hover:rotate-12"
+                      alt="ENSPM Logo"
+                    />
                     <span className="text-lg font-medium text-center text-gray-700">
                       École Nationale Supérieure Polytechnique de Maroua
                     </span>
@@ -139,20 +227,24 @@ function HomePage() {
       </section>
 
       {/* Votes Section avec animations décalées */}
-      <section className={`py-16 transition-all duration-1000 delay-500 bg-orange-50 ${
-        isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-      }`}>
+      <section
+        className={`py-16 transition-all duration-1000 delay-500 bg-orange-50 ${
+          isLoaded ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
+        }`}
+      >
         <div className="container mx-auto px-4">
           <div className="backdrop-blur-sm border-white/50">
             <div className="text-center mb-12">
               <div className="flex items-center justify-center gap-3 mb-4">
                 <Trophy className="w-8 h-8 text-amber-600" />
-                <h2 className="text-3xl font-light text-gray-700">Votes disponibles</h2>
+                <h2 className="text-3xl font-light text-gray-700">
+                  Votes disponibles
+                </h2>
                 <Trophy className="w-8 h-8 text-amber-600" />
               </div>
               <div className="w-24 h-1 bg-gradient-to-r from-purple-600 to-amber-600 mx-auto rounded-full"></div>
             </div>
-            
+
             {availableGroups.length === 0 ? (
               <div className="text-center py-16">
                 <div className="animate-bounce mb-4">
@@ -232,6 +324,17 @@ function HomePage() {
                                       </span>
                                     </div>
                                   </div>
+                                  <Accordion type="single" collapsible>
+                                    <AccordionItem value="category">
+                                      <AccordionTrigger>
+                                        {" "}
+                                        Categories{" "}
+                                      </AccordionTrigger>
+                                      <AccordionContent>
+                                        <CategoryList voteId={vote.id} />
+                                      </AccordionContent>
+                                    </AccordionItem>
+                                  </Accordion>
                                   {!currentStudent && (
                                     <div className="text-center py-2">
                                       <span className="inline-flex items-center gap-2 text-gray-500 bg-gray-100 px-4 py-2 rounded-full">
@@ -243,25 +346,30 @@ function HomePage() {
                                   )}
                                   <div className="pt-2">
                                     {vote.status === "active" &&
-                                    currentStudent &&
-                                    currentStudent.groupId === group.id && (
-                                      <Button
-                                        className="w-full bg-gradient-to-r from-purple-600 to-amber-600 hover:from-purple-700 hover:to-amber-700 transition-all duration-300 transform hover:scale-105"
-                                        onClick={() => handleVoteClick(vote.id)}
-                                      >
-                                        🎭 Participer au vote
-                                      </Button>
-                                    ) }
+                                      currentStudent &&
+                                      currentStudent.groupId === group.id && (
+                                        <ButtonWithVoteChecked
+                                          className="w-full bg-gradient-to-r from-purple-600 to-amber-600 hover:from-purple-700 hover:to-amber-700 transition-all duration-300 transform hover:scale-105"
+                                          voteId={vote.id}
+                                          studentId={currentStudent.id}
+                                          onClick={() =>
+                                            handleVoteClick(vote.id)
+                                          }
+                                        >
+                                          🎭 Participer au vote
+                                        </ButtonWithVoteChecked>
+                                      )}
                                     {vote.status === "active" &&
-                                    currentStudent &&
-                                    currentStudent.groupId !== group.id && (
-                                      <div className="text-center py-2">
-                                        <span className="inline-flex items-center gap-2 text-gray-500 bg-gray-100 px-4 py-2 rounded-full">
-                                          <Lock className="w-4 h-4" />
-                                          Vous ne pouvez pas participer au vote de ce groupe
-                                        </span>
-                                      </div>
-                                    )}
+                                      currentStudent &&
+                                      currentStudent.groupId !== group.id && (
+                                        <div className="text-center py-2">
+                                          <span className="inline-flex items-center gap-2 text-gray-500 bg-gray-100 px-4 py-2 rounded-full">
+                                            <Lock className="w-4 h-4" />
+                                            Vous ne pouvez pas participer au
+                                            vote de ce groupe
+                                          </span>
+                                        </div>
+                                      )}
                                     {vote.status === "completed" && (
                                       <div className="text-center py-2">
                                         <span className="inline-flex items-center gap-2 text-gray-500 bg-gray-100 px-4 py-2 rounded-full">
@@ -292,9 +400,11 @@ function HomePage() {
       </section>
 
       {/* À propos Section */}
-      <section className={`py-16 transition-all duration-1000 delay-700 ${
-        isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-      }`}>
+      <section
+        className={`py-16 transition-all duration-1000 delay-700 ${
+          isLoaded ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
+        }`}
+      >
         <div className="container mx-auto px-4">
           <div className="bg-gradient-to-r from-purple-600/90 to-amber-600/90 rounded-3xl p-8  text-white">
             <div className="text-center mb-8">
@@ -303,12 +413,13 @@ function HomePage() {
             </div>
             <div className="max-w-4xl mx-auto">
               <p className="text-lg leading-relaxed text-center">
-                <span className="font-bold text-amber-200">ENSPM Awards</span> est une initiative étudiante visant à
-                promouvoir l'excellence et le vivre ensemble. Cette plateforme est
-                indépendante du cadre administratif de l'école. En participant, vous
-                vous engagez à respecter les autres, à éviter les propos injurieux et
-                à suivre les règles établies. Nous nous réservons le droit de modérer
-                ou de supprimer tout contenu inapproprié.
+                <span className="font-bold text-amber-200">ENSPM Awards</span>{" "}
+                est une initiative étudiante visant à promouvoir l'excellence et
+                le vivre ensemble. Cette plateforme est indépendante du cadre
+                administratif de l'école. En participant, vous vous engagez à
+                respecter les autres, à éviter les propos injurieux et à suivre
+                les règles établies. Nous nous réservons le droit de modérer ou
+                de supprimer tout contenu inapproprié.
               </p>
             </div>
           </div>
@@ -316,9 +427,11 @@ function HomePage() {
       </section>
 
       {/* Contact Section */}
-      <section className={`py-16 transition-all duration-1000 delay-900 ${
-        isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-      }`}>
+      <section
+        className={`py-16 transition-all duration-1000 delay-900 ${
+          isLoaded ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
+        }`}
+      >
         <div className="container mx-auto px-4">
           <div className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 border-white/50">
             <div className="text-center">
@@ -328,9 +441,10 @@ function HomePage() {
               </div>
               <div className="w-24 h-1 bg-gradient-to-r from-purple-600 to-amber-600 mx-auto rounded-full mb-6"></div>
               <p className="text-lg text-gray-600 mb-4">
-                Pour toute question ou suggestion, vous pouvez nous contacter par email
+                Pour toute question ou suggestion, vous pouvez nous contacter
+                par email
               </p>
-              <a 
+              <a
                 href="mailto:legrandpone1@gmail.com"
                 className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-amber-600 text-white px-6 py-3 rounded-full hover:shadow-lg transition-all duration-300 hover:scale-105"
               >

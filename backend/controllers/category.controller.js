@@ -41,3 +41,14 @@ export const updateCategory = async (req, res) => {
         res.status(500).json({ message: "Error updating category", error });
     }
 };
+
+
+export const getCategoriesByVoteId = async (req, res)=>{
+    const {voteId} = req.params;
+    try {
+        const categories = await models.Category.findAll({where:{voteId}});
+        res.status(200).json({ message: "Categories found successfully", categories });
+    } catch (error) {
+        res.status(500).json({ message: "Error getting categories", error });
+    }
+}

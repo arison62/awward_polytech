@@ -376,6 +376,7 @@ function VoteManagement() {
     setCategoryNumber(categoryNumber - 1);
   };
   const handleCreateVote = async (e: React.FormEvent) => {
+    console.log('Creation vote')
     e.preventDefault();
     setLoading(true);
 
@@ -521,6 +522,7 @@ function VoteManagement() {
               size={"sm"}
               className="w-fit"
               variant={"secondary"}
+              type="button"
             >
               Ajouter une Catégorie
             </Button>
@@ -530,6 +532,7 @@ function VoteManagement() {
                 size={"sm"}
                 className="w-fit"
                 variant={"ghost"}
+                type="button"
               >
                 Supprimer une Catégorie
               </Button>
