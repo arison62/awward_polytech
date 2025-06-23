@@ -268,12 +268,6 @@ export const updateVoteStatusWithJob = async ()=>{
           { status: VOTE_STATUS.pending },
           { status: VOTE_STATUS.active },
         ],
-        startDate: {
-          [Op.lte]: new Date(),
-        },
-        endDate: {
-          [Op.gte]: new Date(),
-        },
       },
     });
 
