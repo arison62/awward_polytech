@@ -194,7 +194,7 @@ function VotePage() {
 
   // Render the vote page content
   return (
-    <div className="container mx-auto p-4 md:p-8">
+    <div className="container mx-auto py-8 md:p-8">
       <Card className="max-w-3xl mx-auto">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-center text-gray-800">
@@ -214,7 +214,7 @@ function VotePage() {
             {voteDetails.vote.Categories.map((category: any) => (
               <div
                 key={category.id}
-                className="border p-4 rounded-lg shadow-sm bg-white"
+                className="border p-2 rounded-lg shadow-sm bg-white"
               >
                 <h3 className="text-xl font-semibold mb-3 text-gray-700">
                   {category.name}
@@ -238,7 +238,7 @@ function VotePage() {
                   >
                     <SelectTrigger
                       id={`category-${category.id}`}
-                      className="w-full"
+                      className="w-full overflow-hidden text-ellipsis"
                     >
                       <SelectValue placeholder="Sélectionner un candidat" />
                     </SelectTrigger>
@@ -248,6 +248,7 @@ function VotePage() {
                           <SelectItem
                             key={candidacy.id}
                             value={candidacy.Student.id.toString()}
+                            
                           >
                             {candidacy.Student.name} (
                             {candidacy.Student.matricule})

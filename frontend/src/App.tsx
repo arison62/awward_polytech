@@ -7,6 +7,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import NotFoundPage from "./pages/NotFoundPage";
 import logo from "./assets/logo.png";
 import { useAppStore } from "./lib/stores";
+import VoteResultsPage from "./pages/VoteResultsPage";
 
 function App() {
   const currentStudent = useAppStore((state) => state.currentStudent);
@@ -41,6 +42,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/vote/:voteId" element={<VotePage />} />
           <Route path="/admin/*" element={<AdminDashboard />} />{" "}
+          <Route path="/votes-result/:voteId" element={<VoteResultsPage />} />
           {/* Utilise /* pour les sous-routes admin */}
           <Route path="*" element={<NotFoundPage />} /> {/* Route 404 */}
         </Routes>

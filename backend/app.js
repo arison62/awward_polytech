@@ -15,9 +15,8 @@ import studentVoteRouter from './routes/studentVote.route.js';
 
 
 import { sequelize } from './models/index.js';
-import models from './models/index.js';
 import { updateVoteStatusWithJob } from './controllers/vote.controller.js';
-import e from 'express';
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;

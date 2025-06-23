@@ -36,6 +36,7 @@ export default (sequelize) => {
             allowNull: false,
             references: {
                 model: 'Students',
+                as: 'Candidate',
                 key: 'id',
             },
         },

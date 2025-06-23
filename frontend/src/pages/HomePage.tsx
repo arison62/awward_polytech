@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -370,14 +370,18 @@ function HomePage() {
                                           </span>
                                         </div>
                                       )}
-                                    {vote.status === "completed" && (
-                                      <div className="text-center py-2">
-                                        <span className="inline-flex items-center gap-2 text-gray-500 bg-gray-100 px-4 py-2 rounded-full">
-                                          <Trophy className="w-4 h-4" />
-                                          Vote terminé
-                                        </span>
-                                      </div>
-                                    )}
+                                    {vote.status === "completed" &&
+                                      currentStudent &&
+                                      currentStudent.groupId === group.id && (
+                                        <div className="text-center py-2">
+                                          <span className="inline-flex items-center gap-2 text-gray-500 bg-gray-100 px-4 py-2 rounded-full hover:scale-125 transition-all duration-300">
+                                            <Link to={`/votes-result/${vote.id}`} className="flex gap-2">
+                                              <Trophy className="w-4 h-4" />
+                                              Voir les resultats
+                                            </Link>
+                                          </span>
+                                        </div>
+                                      )}
                                     {vote.status === "pending" && (
                                       <CountDownDate
                                         endDate={new Date(vote.startDate)}
