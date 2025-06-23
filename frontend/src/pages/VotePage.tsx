@@ -103,18 +103,18 @@ function VotePage() {
 
   // Handler for submitting all votes
   const handleVoteSubmission = async () => {
-    // Check if all categories have a selected candidate
-    const allCategoriesVoted = voteDetails.vote.Categories.every(
-      (category: any) => selectedCandidates[category.id] !== null
-    );
+    // // Check if all categories have a selected candidate
+    // const allCategoriesVoted = voteDetails.vote.Categories.every(
+    //   (category: any) => selectedCandidates[category.id] !== null
+    // );
 
-    if (!allCategoriesVoted) {
-      toast("Validation requise", {
-        description:
-          "Veuillez sélectionner un candidat pour chaque catégorie avant de soumettre.",
-      });
-      return; // Stop submission if not all categories are voted
-    }
+    // if (!allCategoriesVoted) {
+    //   toast("Validation requise", {
+    //     description:
+    //       "Veuillez sélectionner un candidat pour chaque catégorie avant de soumettre.",
+    //   });
+    //   return; // Stop submission if not all categories are voted
+    // }
 
     setSubmitting(true); // Set submitting to true
     let successCount = 0;
@@ -154,18 +154,12 @@ function VotePage() {
     setSubmitting(false); // Set submitting to false after all votes are attempted
 
     // Display toast messages based on submission results
-    if (successCount === voteDetails.vote.Categories.length) {
+    if (successCount > 0) {
       toast("Succès", {
         description: "Tous vos votes ont été soumis avec succès !",
       });
       navigate("/"); // Navigate to dashboard on full success
-    } else if (successCount > 0) {
-      toast("Partiel succès", {
-        description: `Certains votes ont été soumis. Erreurs: ${errorMessages.join(
-          ", "
-        )}`,
-      });
-    } else {
+    }  else {
       toast("Échec", {
         description: `Aucun vote n'a pu être soumis. Erreurs: ${errorMessages.join(
           ", "
