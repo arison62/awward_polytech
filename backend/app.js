@@ -18,7 +18,7 @@ import { sequelize } from './models/index.js';
 import { updateVoteStatusWithJob } from './controllers/vote.controller.js';
 
 const corsOptions = {
-    origin: ['http://localhost:5173', 'https://enspm-award.netlify.app/'],
+    origin: ['https://enspm-award.netlify.app','https://awward-polytech.onrender.com' ,'http://localhost:5173'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true
 }
