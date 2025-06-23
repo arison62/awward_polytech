@@ -33,6 +33,7 @@ export const deleteGroup = async (req, res) => {
 
 export const getGroups = async (req, res) => {
     const {id} = req.params;
+
     try {
         if(id){
             const group = await models.Group.findByPk(id, {include: {all: true}});

@@ -180,6 +180,7 @@ export const getGroups = async (): Promise<ApiResponse<any>> => {
   // TODO: Appel API pour obtenir la liste des groupes
   try {
     const response = await fetch(`${API_BASE_URL}/group`);
+    console.log(response.status)
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(
@@ -187,8 +188,10 @@ export const getGroups = async (): Promise<ApiResponse<any>> => {
       );
     }
     const data = await response.json();
+  
     return { data: data.groups };
   } catch (error: any) {
+    console.log(error);
     return { error: error.message || "Erreur réseau." };
   }
 };

@@ -118,6 +118,7 @@ function HomePage() {
       if (response.data) {
         setAvailableGroups(response.data);
       } else if (response.error) {
+        console.log(response.error);
         toast(
           "Une erreur s'est produite lors de la récupération des votes disponibles.",
           {

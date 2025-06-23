@@ -18,9 +18,9 @@ import { sequelize } from './models/index.js';
 import { updateVoteStatusWithJob } from './controllers/vote.controller.js';
 
 const corsOptions = {
-    origin: 'https://awward-polytech.onrender.com',
+    origin: ['http://localhost:5173', 'https://enspm-award.netlify.app/'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
 }
 const app = express();
 const PORT = process.env.PORT || 3000;
